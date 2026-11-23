@@ -58,6 +58,7 @@ jobs:
                 sed -i '58s/$/ -std=gnu17/' feeds/packages/net/vsftpd/Makefile
                 sed -i '65s/$/ -std=gnu17/' feeds/packages/net/vsftpd/Makefile
                 rm -f feeds/packages/libs/libpfring/patches/002-Fix-compilation-on-6.18.57.patch
+                sed -i '12d' feeds/luci/applications/luci-app-attendedsysupgrade/Makefile
                 ./scripts/feeds update -a
                 ./scripts/feeds install -a -f
                 mkdir -p files/www/repo
