@@ -80,7 +80,7 @@ jobs:
                 ./scripts/feeds install -a -f
                 wget https://github.com/mj22226/openwrt-arm64/releases/download/rockchip-22.1.3/llvm-bpf-22.1.3.Linux-aarch64.tar.zst
                 tar -xvf llvm-bpf-22.1.3.Linux-aarch64.tar.zst
-                cp .github/workflows/rk-config .config
+                mv rk-config .config
                 echo 'CONFIG_GOLANG_EXTERNAL_BOOTSTRAP_ROOT="/opt/hostedtoolcache/go/1.27.4/arm64/bin"' >> .config
                 make defconfig
                 git apply 07-key.patch
