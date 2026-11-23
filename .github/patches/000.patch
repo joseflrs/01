@@ -1321,19 +1321,6 @@ index 3150877938..8ac270933a 100644
  		;;
  	bananapi,bpi-r4)
  		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 sfp-lan" "wan sfp-wan"
-diff --git a/target/linux/mediatek/image/filogic.mk b/target/linux/mediatek/image/filogic.mk
-index 4ac459d6ee..33f015fb76 100644
---- a/target/linux/mediatek/image/filogic.mk
-+++ b/target/linux/mediatek/image/filogic.mk
-@@ -11,7 +11,7 @@ endef
- 
- define Build/fit-with-netgear-top-level-rootfs-node
- 	$(call Build/fit-its,$(1))
--	$(TOPDIR)/scripts/gen_netgear_rootfs_node.sh $(KERNEL_BUILD_DIR)/root.squashfs$(if $(TARGET_PER_DEVICE_ROOTFS),+pkg=$(ROOTFS_ID/$(DEVICE_NAME))) > $@.rootfs
-+	$(TOPDIR)/scripts/gen_netgear_rootfs_node.sh $(KERNEL_BUILD_DIR)/root.squashfs > $@.rootfs
- 	awk '/configurations/ { system("cat $@.rootfs") } 1' $@.its > $@.its.tmp
- 	@mv -f $@.its.tmp $@.its
- 	@rm -f $@.rootfs
 diff --git a/target/linux/rockchip/armv8/base-files/etc/board.d/01_leds b/target/linux/rockchip/armv8/base-files/etc/board.d/01_leds
 index 6cb8dfebb4..732a41fc13 100644
 --- a/target/linux/rockchip/armv8/base-files/etc/board.d/01_leds
