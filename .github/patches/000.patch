@@ -62,6 +62,198 @@ Subject: [PATCH] 000
  create mode 100644 target/linux/rockchip/patches-6.18/500-v6.12-rockpi4a.patch
  create mode 100644 target/linux/rockchip/patches-6.18/501-nanopi-m4v2.patch
 
+diff --git a/package/devel/perf/Makefile b/package/devel/perf/Makefile
+index 208f1af5ef..c56f525803 100644
+--- a/package/devel/perf/Makefile
++++ b/package/devel/perf/Makefile
+@@ -42,6 +42,8 @@ HOST_CFLAGS += -I$(LINUX_DIR)/tools/include
+ 
+ TARGET_LDFLAGS += $(INTL_LDFLAGS)
+ 
++TARGET_CFLAGS += -Wno-error=implicit-function-declaration
++
+ MAKE_FLAGS = \
+ 	ARCH="$(LINUX_KARCH)" \
+ 	NO_LIBPERL=1 \
+@@ -49,6 +51,7 @@ MAKE_FLAGS = \
+ 	NO_NEWT=1 \
+ 	NO_LZMA=1 \
+ 	NO_BACKTRACE=1 \
++	NO_LIBDW=1 \
+ 	NO_LIBNUMA=1 \
+ 	NO_SLANG=1 \
+ 	NO_GTK2=1 \
+diff --git a/tools/elfutils/Makefile b/tools/elfutils/Makefile
+index 49c2526860..11bba2b61e 100644
+--- a/tools/elfutils/Makefile
++++ b/tools/elfutils/Makefile
+@@ -3,12 +3,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=elfutils
+-PKG_VERSION:=0.196
++PKG_VERSION:=0.197
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
+ PKG_SOURCE_URL:=https://sourceware.org/$(PKG_NAME)/ftp/$(PKG_VERSION)
+-PKG_HASH:=fd5cc6b77ad6773cac93cb3f415f9318ac3b3455eecf801f6b4a742c4f6c7209
++PKG_HASH:=1fdf525f22dcf796d99a99ba3ea00a1f7b1ae5421bc62e8443a708920b99b904
+ 
+ PKG_LICENSE:=GPL-3.0-or-later
+ PKG_LICENSE_FILES:=COPYING COPYING-GPLV2 COPYING-LGPLV3
+diff --git a/tools/elfutils/patches/006-Fix-build-on-aarch64-musl.patch b/tools/elfutils/patches/006-Fix-build-on-aarch64-musl.patch
+deleted file mode 100644
+index f47f4ff2f7..0000000000
+--- a/tools/elfutils/patches/006-Fix-build-on-aarch64-musl.patch
++++ /dev/null
+@@ -1,44 +0,0 @@
+-From 578f370c7e7a9f056aefa062b34590b0aa13bce5 Mon Sep 17 00:00:00 2001
+-From: Hongxu Jia <hongxu.jia@windriver.com>
+-Date: Tue, 15 Aug 2017 17:27:30 +0800
+-Subject: [PATCH] Fix build on aarch64/musl
+-
+-Errors
+-
+-error: redefinition
+- of 'struct iovec'
+- struct iovec { void *iov_base; size_t iov_len; };
+-        ^
+-Upstream-Status: Pending
+-Signed-off-by: Khem Raj <raj.khem@gmail.com>
+-
+-Rebase to 0.170
+-Signed-off-by: Hongxu Jia <hongxu.jia@windriver.com>
+-
+----
+- backends/aarch64_initreg.c | 2 +-
+- backends/arm_initreg.c     | 2 +-
+- 2 files changed, 2 insertions(+), 2 deletions(-)
+-
+---- a/backends/aarch64_initreg.c
+-+++ b/backends/aarch64_initreg.c
+-@@ -33,7 +33,7 @@
+- #include "system.h"
+- #include <assert.h>
+- #if defined(__aarch64__) && defined(__linux__)
+--# include <linux/uio.h>
+-+# include <sys/uio.h>
+- # include <sys/user.h>
+- # include <sys/ptrace.h>
+- # include <asm/ptrace.h>
+---- a/backends/arm_initreg.c
+-+++ b/backends/arm_initreg.c
+-@@ -38,7 +38,7 @@
+- #endif
+- 
+- #ifdef __aarch64__
+--# include <linux/uio.h>
+-+# include <sys/uio.h>
+- # include <sys/user.h>
+- # include <sys/ptrace.h>
+- /* Deal with old glibc defining user_pt_regs instead of user_regs_struct.  */
+diff --git a/tools/elfutils/patches/012-backport-mips-support-readelf.patch b/tools/elfutils/patches/012-backport-mips-support-readelf.patch
+index dbff552fbc..c0487cad99 100644
+--- a/tools/elfutils/patches/012-backport-mips-support-readelf.patch
++++ b/tools/elfutils/patches/012-backport-mips-support-readelf.patch
+@@ -25,7 +25,7 @@ Signed-off-by: Ying Huang <ying.huang@oss.cipunited.com>
+ 
+ --- a/backends/Makefile.am
+ +++ b/backends/Makefile.am
+-@@ -102,7 +102,7 @@ loongarch_SRCS = loongarch_init.c loonga
++@@ -103,7 +103,7 @@ loongarch_SRCS = loongarch_init.c loonga
+  
+  arc_SRCS = arc_init.c arc_symbol.c
+  
+@@ -772,7 +772,7 @@ Signed-off-by: Ying Huang <ying.huang@oss.cipunited.com>
+ +}
+ --- a/libelf/libelfP.h
+ +++ b/libelf/libelfP.h
+-@@ -624,4 +624,5 @@ extern void __libelf_reset_rawdata (Elf_
++@@ -640,4 +640,5 @@ extern void __libelf_reset_rawdata (Elf_
+  #define ELF64_MIPS_R_TYPE1(i)          ((i) & 0xff)
+  #define ELF64_MIPS_R_TYPE2(i)           (((i) >> 8) & 0xff)
+  #define ELF64_MIPS_R_TYPE3(i)           (((i) >> 16) & 0xff)
+@@ -994,7 +994,7 @@ Signed-off-by: Ying Huang <ying.huang@oss.cipunited.com>
+  	    }
+  	}
+      }
+-@@ -12752,7 +12848,7 @@ print_debug (Dwfl_Module *dwflmod, Ebl *
++@@ -12763,7 +12859,7 @@ print_debug (Dwfl_Module *dwflmod, Ebl *
+  	  GElf_Shdr shdr_mem;
+  	  GElf_Shdr *shdr = gelf_getshdr (scn, &shdr_mem);
+  
+@@ -1003,7 +1003,7 @@ Signed-off-by: Ying Huang <ying.huang@oss.cipunited.com>
+  	    {
+  	      const char *name = elf_strptr (ebl->elf, shstrndx,
+  					     shdr->sh_name);
+-@@ -12783,7 +12879,7 @@ print_debug (Dwfl_Module *dwflmod, Ebl *
++@@ -12794,7 +12890,7 @@ print_debug (Dwfl_Module *dwflmod, Ebl *
+        GElf_Shdr shdr_mem;
+        GElf_Shdr *shdr = gelf_getshdr (scn, &shdr_mem);
+  
+@@ -1014,7 +1014,7 @@ Signed-off-by: Ying Huang <ying.huang@oss.cipunited.com>
+  	  {
+ --- a/tests/Makefile.am
+ +++ b/tests/Makefile.am
+-@@ -241,7 +241,7 @@ TESTS = run-arextract.sh run-arsymtest.s
++@@ -242,7 +242,7 @@ TESTS = run-arextract.sh run-arsymtest.s
+  	run-nvidia-extended-linemap-libdw.sh run-nvidia-extended-linemap-readelf.sh \
+  	run-readelf-dw-form-indirect.sh run-strip-largealign.sh \
+  	run-readelf-Dd.sh run-dwfl-core-noncontig.sh run-cu-dwp-section-info.sh \
+@@ -1023,7 +1023,7 @@ Signed-off-by: Ying Huang <ying.huang@oss.cipunited.com>
+  	run-sysroot.sh \
+  	run-test-manyfuncs.sh \
+  	run-eu-search-cfi.sh run-eu-search-macros.sh \
+-@@ -738,7 +738,7 @@ EXTRA_DIST = run-arextract.sh run-arsymt
++@@ -744,7 +744,7 @@ EXTRA_DIST = run-arextract.sh run-arsymt
+  	     testfile-dwp-4-cu-index-overflow.bz2 \
+  	     testfile-dwp-4-cu-index-overflow.dwp.bz2 \
+  	     testfile-dwp-cu-index-overflow.source \
+diff --git a/tools/elfutils/patches/100-portability.patch b/tools/elfutils/patches/100-portability.patch
+index 89f24f8272..2a0461efeb 100644
+--- a/tools/elfutils/patches/100-portability.patch
++++ b/tools/elfutils/patches/100-portability.patch
+@@ -25,7 +25,7 @@
+  # Only available since automake 1.12
+  m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+  AC_CHECK_TOOL([READELF], [readelf])
+-@@ -727,6 +731,8 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([])],
++@@ -729,6 +733,8 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([])],
+  CFLAGS="$old_CFLAGS"])
+  AS_IF([test "x$ac_cv_fno_addrsig" = "xyes"], CFLAGS="$CFLAGS -fno-addrsig")
+  
+diff --git a/tools/elfutils/patches/101-shared-conditional.patch b/tools/elfutils/patches/101-shared-conditional.patch
+index fb3cf863b9..ce86c97310 100644
+--- a/tools/elfutils/patches/101-shared-conditional.patch
++++ b/tools/elfutils/patches/101-shared-conditional.patch
+@@ -9,7 +9,7 @@
+  AC_CACHE_CHECK([whether gcc supports __attribute__((visibility()))],
+  	ac_cv_visibility, [dnl
+  save_CFLAGS="$CFLAGS"
+-@@ -467,7 +469,10 @@ AS_HELP_STRING([--enable-install-elfh],[
++@@ -469,7 +471,10 @@ AS_HELP_STRING([--enable-install-elfh],[
+  AM_CONDITIONAL(INSTALL_ELFH, test "$install_elfh" = yes)
+  
+  AM_CONDITIONAL(BUILD_STATIC, [dnl
+@@ -161,7 +161,7 @@
+  		  vdsosyms \
+  		  getsrc_die strptr newdata newzdata \
+  		  elfstrtab dwfl-proc-attach \
+-@@ -204,7 +204,7 @@ TESTS = run-arextract.sh run-arsymtest.s
++@@ -205,7 +205,7 @@ TESTS = run-arextract.sh run-arsymtest.s
+  	run-readelf-addr.sh run-readelf-str.sh \
+  	run-readelf-multi-noline.sh \
+  	run-readelf-types.sh \
+@@ -170,7 +170,7 @@
+  	run-linkmap-cut.sh run-aggregate-size.sh run-peel-type.sh \
+  	vdsosyms run-readelf-A.sh \
+  	run-getsrc-die.sh run-strptr.sh newdata newzdata \
+-@@ -341,6 +341,11 @@ if HAVE_LIBPFM
++@@ -342,6 +342,11 @@ if HAVE_LIBPFM
+  export HAVE_LIBPFM = 1
+  endif
+  
 diff --git a/config/Config-images.in b/config/Config-images.in
 index 7cc3225182..b07f2e5f65 100644
 --- a/config/Config-images.in
