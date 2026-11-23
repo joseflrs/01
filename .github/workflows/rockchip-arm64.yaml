@@ -1,5 +1,8 @@
 name: Build rockchip arm64 firmware
-on: [push]
+on:
+   workflow_dispatch:
+   schedule:
+    - cron: '01 08 * * *'
 
 jobs:
     build:
