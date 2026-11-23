@@ -1,4 +1,4 @@
-name: Build rockchip 86 firmware
+name: Build rockchip x86 firmware
 on:
    workflow_dispatch:
    schedule:
