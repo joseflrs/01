@@ -672,3 +672,10 @@ CONFIG_shadow-all=y
 # CONFIG_OPENVPN_openssl_ENABLE_SMALL is not set
 # CONFIG_REPRODUCIBLE_DEBUG_INFO is not set
 # CONFIG_SDK is not set
+CONFIG_PACKAGE_kmod-hwmon-pwmfan=y
+CONFIG_PACKAGE_kmod-i2c-gpio=y
+CONFIG_PACKAGE_kmod-mt7915e=y
+CONFIG_PACKAGE_kmod-mt7986-firmware=y
+CONFIG_PACKAGE_kmod-sfp=y
+CONFIG_PACKAGE_kmod-usb3=y
+CONFIG_PACKAGE_mt7986-wo-firmware=y
