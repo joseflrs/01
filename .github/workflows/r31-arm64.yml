@@ -29,6 +29,7 @@ jobs:
                 wget https://github.com/mj22226/openwrt-arm64/releases/download/filogic-22.1.3/llvm-bpf-22.1.3.Linux-aarch64.tar.zst
                 tar -xvf llvm-bpf-22.1.3.Linux-aarch64.tar.zst
                 patch -p 1 -i 000.patch
+                git apply 12.patch
                 # patch -p 1 -i kernel.patch
                 # patch -p 1 -i mac80211.patch
                 # patch -p 1 -i m76.patch
