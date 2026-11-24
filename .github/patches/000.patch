@@ -284,7 +284,7 @@ index 05f5c8c47c..81cce6074d 100644
 -src-git luci https://git.openwrt.org/project/luci.git
 -src-git routing https://git.openwrt.org/feed/routing.git
 -src-git telephony https://git.openwrt.org/feed/telephony.git
-+src-git packages https://github.com/openwrt/packages.git
++src-git packages https://github.com/openwrt/packages.git^0a60a737b3e373df9329de94c48c3cc61a8dc053
 +src-git luci https://github.com/openwrt/luci.git
 +src-git routing https://github.com/openwrt/routing.git
 +src-git telephony https://github.com/openwrt/telephony.git
