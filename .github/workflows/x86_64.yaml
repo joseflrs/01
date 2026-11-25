@@ -23,7 +23,7 @@ jobs:
 
             - name: Build
               run: |
-                it clone https://github.com/openwrt/openwrt.git
+                git clone https://github.com/openwrt/openwrt.git
                 cp -rf .github/patches/*.patch openwrt/
                 cp -rf .github/workflows/x86_64-config openwrt/
                 cd openwrt
