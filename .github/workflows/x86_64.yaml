@@ -1,5 +1,8 @@
 name: Build x86_64 v6.18
-on: [push]
+on:
+   workflow_dispatch:
+   schedule:
+    - cron: '01 08 * * *'
 
 jobs:
     build:
