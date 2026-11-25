@@ -88,8 +88,10 @@ jobs:
                 mkdir -p files/www/repo
                 git apply 08-feeds-rk.patch
                 make -j$(nproc) 'IGNORE_ERRORS=n m' || true
-                cp -rf staging_dir/target-aarch64_generic_musl/image/*u-boot*.bin bin/targets/rockchip/armv8/ || true
-                tar -czvf bin/targets/rockchip/armv8/logs.tar.gz logs
+                mkdir -p u-boot-rockchip
+                cp -rf staging_dir/target-aarch64_generic_musl/image/*u-boot*.bin u-boot-rockchip/ || true
+                tar -czvf bin/targets/rockchip/armv8/u-boot-rockchip.tar.gz u-boot-rockchip || true
+                tar -czvf bin/targets/rockchip/armv8/logs.tar.gz logs || true
                 rm -rf bin/targets/rockchip/armv8/packages || true
                 echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
                 echo "HASH=$(git log -1 --format="%H")" >> $GITHUB_ENV
