@@ -90,7 +90,7 @@ jobs:
                 name: x86_64 v6.18 Images ${{ env.DATE }}
                 tag: x86-6.18
                 replacesArtifacts: true
-                prerelease: true
+                draft: true
                 token: "${{ secrets.GITHUB_TOKEN }}"
                 artifacts: openwrt/bin/targets/x86/64/*
 
