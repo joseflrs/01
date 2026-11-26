@@ -1180,7 +1180,7 @@ index e05c369d64..994acdb139 100644
 +	ucidef_set_interfaces_lan_wan "eth0 eth2" "eth1"
  	;;
  
- raspberrypi,model-zero-2 |\
+ raspberrypi,4-model-a |\
 diff --git a/target/linux/bcm27xx/base-files/etc/init.d/resize-rootfs b/target/linux/bcm27xx/base-files/etc/init.d/resize-rootfs
 new file mode 100755
 index 0000000000..740b751499
